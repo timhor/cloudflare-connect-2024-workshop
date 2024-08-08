@@ -14,36 +14,36 @@
 import { Hono } from 'hono';
 
 type Bindings = {
-	AI: any;
+  AI: any;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
 
 app.get('/', async (c) => {
-	const messages = [
-		{ role: 'system', content: 'You are a Melbourne resident' },
-		{
-			role: 'user',
-			content: 'What are some fun things to do in Sydney, Australia?',
-		},
-	];
+  const messages = [
+    { role: 'system', content: 'You are a Melbourne resident' },
+    {
+      role: 'user',
+      content: 'What are some fun things to do in Sydney, Australia?',
+    },
+  ];
 
-	const response = await c.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
-		messages,
-	});
+  const response = await c.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+    messages,
+  });
 
-	return c.json(response);
+  return c.json(response);
 });
 
 app.get('/:username', async (c) => {
-	const username = c.req.param('username');
-	const response = await fetch(`https://api.github.com/users/${username}/repos`, {
-		headers: {
-			'User-Agent': 'CF-Worker Sydney Workshop',
-		},
-	});
-	const data: object = await response.json();
-	return c.json(data);
+  const username = c.req.param('username');
+  const response = await fetch(`https://api.github.com/users/${username}/repos`, {
+    headers: {
+      'User-Agent': 'CF-Worker Sydney Workshop',
+    },
+  });
+  const data: object = await response.json();
+  return c.json(data);
 });
 
 export default app;
