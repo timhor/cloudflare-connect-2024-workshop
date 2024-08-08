@@ -13,11 +13,26 @@
 
 import { Hono } from 'hono';
 
-const app = new Hono();
+type Bindings = {
+	AI: any;
+};
+
+const app = new Hono<{ Bindings: Bindings }>();
 
 app.get('/', async (c) => {
-	console.log(c);
-	return c.json({ city: 'Sydney' });
+	const messages = [
+		{ role: 'system', content: 'You are a Melbourne resident' },
+		{
+			role: 'user',
+			content: 'What are some fun things to do in Sydney, Australia?',
+		},
+	];
+
+	const response = await c.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+		messages,
+	});
+
+	return c.json(response);
 });
 
 export default app;
