@@ -35,4 +35,15 @@ app.get('/', async (c) => {
 	return c.json(response);
 });
 
+app.get('/:username', async (c) => {
+	const username = c.req.param('username');
+	const response = await fetch(`https://api.github.com/users/${username}/repos`, {
+		headers: {
+			'User-Agent': 'CF-Worker Sydney Workshop',
+		},
+	});
+	const data: object = await response.json();
+	return c.json(data);
+});
+
 export default app;
